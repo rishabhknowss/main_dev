@@ -12,6 +12,7 @@ export const Profile = () => {
         <Navbar />
         <ProfileStats/>
         
+        
 
       </div>
     </div>

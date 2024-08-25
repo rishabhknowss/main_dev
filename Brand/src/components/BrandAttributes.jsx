@@ -3,6 +3,7 @@ import { Edit2 } from 'lucide-react';
 import logo from '../assets/tempbrandlogo.svg';
 import BrandCards from './BrandCards';
 import { BrandIndicators } from './BrandIndicators';
+import { ProfileFooter } from './profilefooter';
 
 export const BrandAttributes = () => {
   return (
@@ -65,6 +66,8 @@ export const BrandAttributes = () => {
 
     <BrandCards />
     <BrandIndicators />
+
+    <ProfileFooter />
     </div>
     
   );

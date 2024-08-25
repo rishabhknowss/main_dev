@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // or "mysql", "sqlite", etc.
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String            @id @default(uuid())
+  email             String            @unique
+  name              String?
+  googleId          String            @unique
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  profile           Profile?
+  preferences       Preference?
+  revenue           Revenue?
+  matchSuggestions  MatchSuggestion[] @relation("UserToSuggested")
+  suggestedToUsers  MatchSuggestion[] @relation("SuggestedUser")
+}
+
+model Profile {
+  id        String  @id @default(uuid())
+  userId    String  @unique
+  user      User    @relation(fields: [userId], references: [id])
+  bio       String?
+  location  String?
+  interests String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Preference {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  ageRange  Int[]
+  location  String?
+  interests String[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model MatchSuggestion {
+  id              String   @id @default(uuid())
+  userId          String
+  suggestedUserId String
+  user            User     @relation("UserToSuggested", fields: [userId], references: [id])
+  suggestedUser   User     @relation("SuggestedUser", fields: [suggestedUserId], references: [id])
+  createdAt       DateTime @default(now())
+
+  @@unique([userId, suggestedUserId]) // Ensures unique suggestions for a user
+}
+
+model Revenue {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  earnings  Float     @default(0.0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PlatformStatistic {
+  id               String   @id @default(uuid())
+  totalUsers       Int
+  activeUsers      Int
+  matchesMade      Int
+  revenueGenerated Float
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
